@@ -10,3 +10,7 @@ chatbot
 app/__pycache__/
 app/routers/__pycache__/
 chatbot/
+node_modules/
+body.txt
+package-lock.json
+package.json
