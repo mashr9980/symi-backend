@@ -46,31 +46,31 @@ def create_pricing_table():
     conn = get_db_connection()
     cursor = conn.cursor()
     
-    try:
-        cursor.execute("""
-            CREATE TABLE IF NOT EXISTS pricing_plans (
-                id SERIAL PRIMARY KEY,
-                name VARCHAR(100) NOT NULL,
-                description TEXT NOT NULL,
-                price NUMERIC(10, 2) NOT NULL,
-                currency VARCHAR(3) NOT NULL DEFAULT 'USD',
-                duration_days INTEGER NOT NULL DEFAULT 365,
-                features JSONB NOT NULL DEFAULT '[]',
-                is_active BOOLEAN NOT NULL DEFAULT TRUE,
-                display_order INTEGER NOT NULL DEFAULT 0,
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-            )
-        """)
-        conn.commit()
+    # try:
+    #     cursor.execute("""
+    #         CREATE TABLE IF NOT EXISTS pricing_plans (
+    #             id SERIAL PRIMARY KEY,
+    #             name VARCHAR(100) NOT NULL,
+    #             description TEXT NOT NULL,
+    #             price NUMERIC(10, 2) NOT NULL,
+    #             currency VARCHAR(3) NOT NULL DEFAULT 'USD',
+    #             duration_days INTEGER NOT NULL DEFAULT 365,
+    #             features JSONB NOT NULL DEFAULT '[]',
+    #             is_active BOOLEAN NOT NULL DEFAULT TRUE,
+    #             display_order INTEGER NOT NULL DEFAULT 0,
+    #             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    #             updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    #         )
+    #     """)
+    #     conn.commit()
         
-    except Exception as e:
-        logger.error(f"Error creating pricing_plans table: {str(e)}")
-        conn.rollback()
+    # except Exception as e:
+    #     logger.error(f"Error creating pricing_plans table: {str(e)}")
+    #     conn.rollback()
         
-    finally:
-        cursor.close()
-        conn.close()
+    # finally:
+    #     cursor.close()
+    #     conn.close()
 
 # Admin - Create a new pricing plan
 @router.post("/admin/plans", response_model=PricingPlanResponse)

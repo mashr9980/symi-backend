@@ -262,16 +262,16 @@ def track_report_generation(user_id: int, report_type: str, report_name: str = N
         table_exists = cursor.fetchone()[0]
         
         # Create table if it doesn't exist
-        if not table_exists:
-            cursor.execute("""
-                CREATE TABLE report_tracking (
-                    id SERIAL PRIMARY KEY,
-                    user_id INT REFERENCES users(id) ON DELETE CASCADE,
-                    report_type VARCHAR(50) NOT NULL,
-                    report_name TEXT,
-                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-                )
-            """)
+        # if not table_exists:
+        #     cursor.execute("""
+        #         CREATE TABLE report_tracking (
+        #             id SERIAL PRIMARY KEY,
+        #             user_id INT REFERENCES users(id) ON DELETE CASCADE,
+        #             report_type VARCHAR(50) NOT NULL,
+        #             report_name TEXT,
+        #             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        #         )
+        #     """)
         
         # Insert record
         cursor.execute("""

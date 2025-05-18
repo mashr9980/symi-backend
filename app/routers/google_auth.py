@@ -13,7 +13,7 @@ import json
 # Load Google client credentials from environment variables
 GOOGLE_CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID") 
 GOOGLE_CLIENT_SECRET = os.getenv("GOOGLE_CLIENT_SECRET") 
-REDIRECT_URI = os.getenv("GOOGLE_REDIRECT_URI", "https://5c8c-175-107-235-139.ngrok-free.app/auth/google/callback")
+REDIRECT_URI = os.getenv("GOOGLE_REDIRECT_URI", "https://api.symi.io/auth/google/callback")
 
 # Set up OAuth
 config = Config(environ=os.environ)
@@ -134,7 +134,7 @@ async def auth_callback(request: Request):
         conn.close()
         
         # Get the frontend URL to redirect to
-        frontend_url = os.getenv("FRONTEND_URL", "http://localhost:3000")
+        frontend_url = os.getenv("FRONTEND_URL", "https:/symi.io")
         next_url = request.session.get("next_url", "/")
         
         # Build the redirect URL with token

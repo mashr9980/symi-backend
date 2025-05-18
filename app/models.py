@@ -93,4 +93,4 @@ def create_tables():
     conn.close()
 
 # Run table creation at startup
-create_tables()
+# create_tables()

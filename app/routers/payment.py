@@ -103,8 +103,8 @@ def create_checkout_session(payment: PaymentRequest, token: str):
                 "quantity": 1,
             }],
             mode="payment",
-            success_url=os.getenv("FRONTEND_URL", "https://9640-175-107-235-139.ngrok-free.app") + "/payment/success?session_id={CHECKOUT_SESSION_ID}",
-            cancel_url=os.getenv("FRONTEND_URL", "https://9640-175-107-235-139.ngrok-free.app") + "/payment/cancel",
+            success_url=os.getenv("FRONTEND_URL", "https://api.symi.io") + "/payment/success?session_id={CHECKOUT_SESSION_ID}",
+            cancel_url=os.getenv("FRONTEND_URL", "https://api.symi.io") + "/payment/cancel",
             customer_email=payment.email,
             metadata=metadata,
         )

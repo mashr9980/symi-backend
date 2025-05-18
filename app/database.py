@@ -6,11 +6,11 @@ from dotenv import load_dotenv
 load_dotenv()
 
 DATABASE_URL = {
-    "dbname": "chatbot_db",
-    "user": "postgres",
-    "password": "123",
-    "host": "localhost",
-    "port": "5432",
+    "dbname": os.getenv("DB_NAME", "chatbot_db"),
+    "user": os.getenv("DB_USER", "postgres"),
+    "password": os.getenv("DB_PASSWORD", "123"),
+    "host": os.getenv("DB_HOST", "localhost"),
+    "port": os.getenv("DB_PORT", "5432"),
 }
 
 # Establish a database connection

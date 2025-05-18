@@ -83,20 +83,44 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Parse URL parameters
-            const urlParams = new URLSearchParams(window.location.search);
-            // const sessionId = urlParams.get('session_id');
-            const planName = urlParams.get('plan_name') || 'Premium Plan';
-            
-            // Update the DOM
+    try {
+        // Parse URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const sessionId = urlParams.get('session_id');
+        const planName = urlParams.get('plan_name') || 'Premium Plan';
+        
+        // Update the DOM - Add error handling
+        if (document.getElementById('sessionId')) {
             document.getElementById('sessionId').textContent = sessionId || 'N/A';
+        }
+        
+        if (document.getElementById('planName')) {
             document.getElementById('planName').textContent = planName;
-            
-            // Set up return button
-            document.getElementById('returnButton').addEventListener('click', function() {
-                window.location.href = 'http://localhost:3000/prompt';
+        }
+        
+        // Set up return button with error handling
+        const returnButton = document.getElementById('returnButton');
+        if (returnButton) {
+            returnButton.addEventListener('click', function() {
+                window.location.href = 'https://symi.io/prompt';
             });
-        });
+        }
+        
+        // Add automatic redirect after 5 seconds
+        console.log("Setting up automatic redirect in 5 seconds...");
+        setTimeout(function() {
+            console.log("Redirecting now...");
+            window.location.href = 'https://symi.io/prompt';
+        }, 5000);
+        
+    } catch (error) {
+        console.error("Error in script:", error);
+        // Ensure redirect happens even if there's an error
+        setTimeout(function() {
+            window.location.href = 'https://symi.io/prompt';
+        }, 5000);
+    }
+});
     </script>
 </body>
 </html>

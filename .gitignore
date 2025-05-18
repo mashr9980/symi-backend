@@ -6,3 +6,5 @@ key.pem
 payment.html
 script to reset database.txt
 add prompts for each profession.txt
+app/__pycache__
+app/routers/__pycache__
