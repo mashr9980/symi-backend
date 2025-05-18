@@ -1,8 +1,0 @@
-{
-  "question": "difference between Welcome To The Rat Race 3 and 5"
-}
-
-{
-  "document_id": "49210820-6a2a-46ca-b4d3-600a56a66bfc",
-  "user_prompt": "give the answer in maximum 20 words"
-}
