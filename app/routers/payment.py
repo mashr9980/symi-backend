@@ -315,7 +315,7 @@ def get_payment_status(token: str):
         cursor.close()
         conn.close()
 
-# Webhook to Handle Stripe Events (e.g., Payment Success)
+# Webhook to Handle Stripe Events 
 @router.post("/webhook")
 async def stripe_webhook(request: Request):
     payload = await request.body()
