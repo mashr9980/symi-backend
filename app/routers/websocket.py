@@ -268,18 +268,14 @@ async def websocket_endpoint(websocket: WebSocket):
     user_id = None
     
     try:
-        # First message should contain token
         initial_message = await websocket.receive_text()
         
         try:
-            # Parse the initial message as JSON
             data = json.loads(initial_message)
             token = data.get("token")
         except json.JSONDecodeError:
-            # If not JSON, assume it's just the token
             token = initial_message
         
-        # Validate token
         user = decode_access_token(token)
         if not user:
             await websocket.send_json({
@@ -291,7 +287,6 @@ async def websocket_endpoint(websocket: WebSocket):
 
         user_id = user["user_id"]
         
-        # Get user data asynchronously
         user_data = await get_user_data_async(user_id)
         
         if "error" in user_data:
@@ -302,18 +297,18 @@ async def websocket_endpoint(websocket: WebSocket):
             await websocket.close()
             return
             
-        # Greeting with profession-specific message
         await websocket.send_json({
             "type": "message",
-            "content": f"Welcome! I'll be asking you specific questions about your {user_data['profession_name']} business to help provide a customized audit."
+            "content": f"Welcome! I'll be asking you specific questions about your {user_data['profession_name']} business to help provide a customized audit.",
+            "flags": {
+                "showSkipButton": True
+            }
         })
 
-        # Track whether chat has ended
         chat_complete = False
 
         while True:
             if chat_complete:
-                # If chat is already complete, send final message with flag
                 await websocket.send_json({
                     "type": "message",
                     "content": "Thank you for completing the audit! You can now generate your Business Transformation Blueprint™ report.",
@@ -330,6 +325,28 @@ async def websocket_endpoint(websocket: WebSocket):
 
             user_message = await websocket.receive_text()
 
+            try:
+                message_data = json.loads(user_message)
+                if message_data.get("action") == "skip_to_report":
+                    await websocket.send_json({
+                        "type": "message",
+                        "content": "Thank you for the information you've provided! Based on your responses, I can now generate your Business Transformation Blueprint™ report. Would you like to proceed?",
+                        "flags": {
+                            "chatComplete": True,
+                            "skippedToReport": True
+                        }
+                    })
+                    await websocket.send_json({
+                        "type": "complete",
+                        "message": "Skipped to report generation"
+                    })
+                    chat_complete = True
+                    continue
+                else:
+                    user_message = message_data.get("message", "")
+            except json.JSONDecodeError:
+                pass
+
             if user_message.lower() == "exit":
                 await websocket.send_json({
                     "type": "message",
@@ -345,12 +362,10 @@ async def websocket_endpoint(websocket: WebSocket):
                 await websocket.close()
                 break
 
-            # Check if user has completed all questions (async)
             loop = asyncio.get_event_loop()
             user_profession = await loop.run_in_executor(db_executor, get_user_profession, user_id)
             is_complete = await loop.run_in_executor(db_executor, has_completed_all_questions, user_id, user_profession)
             
-            # If user already completed the audit and says a trigger word like "report" or "generate"
             if is_complete and any(word in user_message.lower() for word in ["report", "generate", "blueprint"]):
                 await websocket.send_json({
                     "type": "message", 
@@ -367,27 +382,25 @@ async def websocket_endpoint(websocket: WebSocket):
                 chat_complete = True
                 continue
 
-            # Send a "thinking" indication to the client
             await websocket.send_json({
                 "type": "thinking",
                 "message": "Thinking..."
             })
             
-            # Get response asynchronously
             response = await process_chat(user_id, user_message)
             
-            # Send the complete response
             await websocket.send_json({
                 "type": "message",
-                "content": response
+                "content": response,
+                "flags": {
+                    "showSkipButton": True
+                }
             })
             
-            # After response is sent, check if all questions have been answered (async)
             is_complete_after = await loop.run_in_executor(db_executor, has_completed_all_questions, user_id, user_profession)
             
-            # If chat just became complete with this message
             if is_complete_after and not is_complete:
-                await asyncio.sleep(0.5)  # Small delay before sending completion message
+                await asyncio.sleep(0.5)
                 await websocket.send_json({
                     "type": "message",
                     "content": "You've answered all the key questions! Would you like to generate your Business Transformation Blueprint™ report?",
